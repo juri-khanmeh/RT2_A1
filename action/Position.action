@@ -1,0 +1,7 @@
+geometry_msgs/PoseStamped target_pose
+---
+#result
+bool ok
+---
+#feedback
+geometry_msgs/Pose actual_pose
