@@ -60,8 +60,7 @@ find_package(catkin REQUIRED COMPONENTS
 ## Generate services in the 'srv' folder
  add_service_files(
    FILES
-   Command.srv
-   
+   Command.srv  
    RandomPosition.srv
  )
 

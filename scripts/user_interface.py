@@ -10,13 +10,13 @@ def main():
     x = int(input("\nPress 1 to start the robot "))
     while not rospy.is_shutdown():
         if (x == 1):
-        	print("Robot has started to move")
-            ui_client("start")
-            x = int(input("\nPress 0 to stop the robot "))
+        	#print("Robot has started to move")
+        	ui_client("start")
+        	x = int(input("\nPress 0 to stop the robot "))
         else:
-            print("Robot has stopped")
-            ui_client("stop")
-            x = int(input("\nPress 1 to start the robot "))
+        	#print("Robot has stopped")
+        	ui_client("stop")
+        	x = int(input("\nPress 1 to start the robot "))
             
 if __name__ == '__main__':
     main()

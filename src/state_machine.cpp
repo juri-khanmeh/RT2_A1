@@ -7,6 +7,8 @@
 #include <actionlib/client/terminal_state.h>
 
 bool start = false;
+bool cancel = true;
+bool n_target = true;
 
 bool user_interface(rt2_assignment1::Command::Request &req, rt2_assignment1::Command::Response &res){
     if (req.command == "start"){
@@ -26,7 +28,7 @@ int main(int argc, char **argv)
    ros::ServiceServer service= n.advertiseService("/user_interface", user_interface);
    ros::ServiceClient client_rp = n.serviceClient<rt2_assignment1::RandomPosition>("/position_server");
    
-   actionlib::SimpleActionClient<action::PositionAction> ac("goToPoint", true);
+   actionlib::SimpleActionClient<rt2_assignment1::PositionAction> ac("/go_to_point", true);
    
    //wait for the action server to come up
    while(!ac.waitForServer(ros::Duration(5.0))){
@@ -42,33 +44,37 @@ int main(int argc, char **argv)
    while(ros::ok()){
    	ros::spinOnce();
    	if (start){
-   		client_rp.call(rp);
-   		p.target_pose.header.frame_id = "base_link";
-		p.target_pose.header.stamp = ros::Time::now();
-   		p.target_pose.pose.position.x = rp.response.x;
-   		p.target_pose.pose.position.y = rp.response.y;
-   		p.target_pose.pose.orientation.w = rp.response.theta;
+   		if(n_target){
+   			client_rp.call(rp);
+   			p.target_pose.header.frame_id = "base_link";
+			p.target_pose.header.stamp = ros::Time::now();
+   			p.target_pose.pose.position.x = rp.response.x;
+   			p.target_pose.pose.position.y = rp.response.y;
+   			p.target_pose.pose.orientation.w = rp.response.theta;
    		
-   		ROS_INFO("Sending goal");
-   		ac.sendGoal(p);
-   		std::cout << "\nGoing to the position: x= " << p.target_pose.pose.position.x << " y= " <<p.target_pose.pose.position.y << " theta = " <<p.target_pose.pose.orientation.w << std::endl;
-   		
-   		while(start){
-   			//ac.waitForResult();
-   			if(ac.getState() == actionlib::SimpleClientGoalState::SUCCEEDED){
-   				ROS_INFO("Target reached!");
-   				break;   			
-   			}
-   			//else
-   			//	ROS_INFO("The base failed to reach the target for some reason");   		
+   			cancel = false;
+   			n_target = false;
+   			//ROS_INFO("Sending goal");
+   			ac.sendGoal(p);
+   			std::cout << "\nGoing to the position: x= " << p.target_pose.pose.position.x << " y= " <<p.target_pose.pose.position.y << " theta = " <<p.target_pose.pose.orientation.w << std::endl;
    		}
-
-  
-	} 
-   	else
-   		ac.cancelGoal();
-   		ROS_INFO("goal is cancelled");
-   	}
+   		else{
+   			if(ac.getState() == actionlib::SimpleClientGoalState::SUCCEEDED){
+   				//ROS_INFO("Target reached!");
+   				n_target = true;
+   			}	
+   		}
+		
    }
+   
+   	else
+   		if(!cancel){
+   			ac.cancelGoal();
+   			//ROS_INFO("goal is cancelled");
+   			cancel = true; n_target = true;
+   		}
+   		
+   	}
+   
    return 0;
 }
