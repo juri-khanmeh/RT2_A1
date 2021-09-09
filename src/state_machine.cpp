@@ -1,47 +1,147 @@
-#include "ros/ros.h"
-#include "rt2_assignment1/Command.h"
-#include "rt2_assignment1/Position.h"
-#include "rt2_assignment1/RandomPosition.h"
 
-bool start = false;
-
-bool user_interface(rt2_assignment1::Command::Request &req, rt2_assignment1::Command::Response &res){
-    if (req.command == "start"){
-    	start = true;
-    }
-    else {
-    	start = false;
-    }
-    return true;
-}
+#include <chrono>
+#include <functional>
+#include <memory>
+#include <cinttypes>
+#include <string>
 
 
-int main(int argc, char **argv)
+#include "rt2_assignment1/srv/position.hpp"
+#include "rt2_assignment1/srv/command.hpp" 
+#include "rt2_assignment1/srv/random_position.hpp"
+
+#include "rclcpp/rclcpp.hpp"
+#include "rclcpp_components/register_node_macro.hpp"
+
+using namespace std::chrono_literals;
+
+using std::placeholders::_1;
+using std::placeholders::_2;
+using std::placeholders::_3;
+
+namespace rt2_assignment1{
+class StateMachine : public rclcpp::Node
 {
-   ros::init(argc, argv, "state_machine");
-   ros::NodeHandle n;
-   ros::ServiceServer service= n.advertiseService("/user_interface", user_interface);
-   ros::ServiceClient client_rp = n.serviceClient<rt2_assignment1::RandomPosition>("/position_server");
-   ros::ServiceClient client_p = n.serviceClient<rt2_assignment1::Position>("/go_to_point");
-   
-   rt2_assignment1::RandomPosition rp;
-   rp.request.x_max = 5.0;
-   rp.request.x_min = -5.0;
-   rp.request.y_max = 5.0;
-   rp.request.y_min = -5.0;
-   rt2_assignment1::Position p;
-   
-   while(ros::ok()){
-   	ros::spinOnce();
-   	if (start){
-   		client_rp.call(rp);
-   		p.request.x = rp.response.x;
-   		p.request.y = rp.response.y;
-   		p.request.theta = rp.response.theta;
-   		std::cout << "\nGoing to the position: x= " << p.request.x << " y= " <<p.request.y << " theta = " <<p.request.theta << std::endl;
-   		client_p.call(p);
-   		std::cout << "Position reached" << std::endl;
-   	}
-   }
-   return 0;
+public:
+  StateMachine(const rclcpp::NodeOptions & options)
+  : Node("StateMachine_server",options)
+  {
+    start = false;
+    finish = true;
+    
+    service_ = this->create_service<rt2_assignment1::srv::Command>("/user_interface", std::bind(&StateMachine::user_interface, this, _1, _2, _3));
+    
+    client1_ = this->create_client<rt2_assignment1::srv::RandomPosition>("/position_server");
+    while (!client1_->wait_for_service(std::chrono::seconds(1))) {
+        if (!rclcpp::ok()) {
+          RCLCPP_ERROR(this->get_logger(), "client_random interrupted while waiting for service to appear.");
+          return;
+        }
+        RCLCPP_INFO(this->get_logger(), "waiting for RandomPosition service to appear...");
+    }
+    
+    client2_ = this->create_client<rt2_assignment1::srv::Position>("go_to_point");
+    while (!client2_->wait_for_service(std::chrono::seconds(1))) {
+        if (!rclcpp::ok()) {
+          RCLCPP_ERROR(this->get_logger(), "client_go interrupted while waiting for service to appear.");
+          return;
+        }
+        RCLCPP_INFO(this->get_logger(), "waiting for go_to_point service to appear...");
+    }    
+    
+	request1 = std::make_shared<rt2_assignment1::srv::RandomPosition::Request>();
+	response1 = std::make_shared<rt2_assignment1::srv::RandomPosition::Response>(); 
+	request2 = std::make_shared<rt2_assignment1::srv::Position::Request>();
+	
+  	request1->x_max= 5.0;
+  	request1->x_min= -5.0;
+  	request1->y_max= 5.0;
+  	request1->y_min= -5.0;
+
+	timer_ = this->create_wall_timer(2000ms,std::bind(&StateMachine::status_check, this));	
+    
+  }
+  
+private:
+  
+
+    
+    void status_check(){
+    	if(start && finish){
+    		finish = false;
+    		//call_client1();
+    		call_client2();
+    		
+    	}
+    }
+  	
+  	void call_client1(){
+
+	  	finish = false;
+  		using ServiceResponseFuture = rclcpp::Client<rt2_assignment1::srv::RandomPosition>::SharedFuture;
+		auto response_received_callback = [this](ServiceResponseFuture future) {
+	  		response1 = future.get();	  		
+	  		RCLCPP_INFO(this->get_logger(), "Going to the position: x= %f y= %f theta= %f",request2->x, request2->y, request2->theta);
+	  		
+  		};
+    	auto result_future = client1_->async_send_request(request1, response_received_callback);
+	}
+	
+	void call_client2()
+	{
+		call_client1();
+		
+    	request2->x= response1->x;
+  		request2->y= response1->y;
+  		request2->theta = response1->theta;
+  		using ServiceResponseFuture = rclcpp::Client<rt2_assignment1::srv::Position>::SharedFuture;
+  		auto goal_finish_callback = [this](ServiceResponseFuture future) {
+  			RCLCPP_INFO(this->get_logger(), "Request: x= %f y= %f theta= %f",request2->x, request2->y, request2->theta);
+  			RCLCPP_INFO(this->get_logger(), "Mission Complete!");
+  			finish = true;
+  		};
+
+    	auto future_result = client2_->async_send_request(request2, goal_finish_callback);  
+    	request2->x= response1->x;
+  		request2->y= response1->y;
+  		request2->theta = response1->theta; 
+
+    }   
+
+  
+    void user_interface(
+    const std::shared_ptr<rmw_request_id_t> request_header,
+    const std::shared_ptr<rt2_assignment1::srv::Command::Request> request,
+    const std::shared_ptr<rt2_assignment1::srv::Command::Response> response)
+    {
+    	(void)request_header;
+      	if (request->command == "start"){
+  	    	start = true;
+      	}
+      	else {
+  	    	start = false;
+        	}
+      	response->ok = true;
+      	RCLCPP_INFO(this->get_logger(), "Command received...");
+    }
+    
+
+    rclcpp::Service<rt2_assignment1::srv::Command>::SharedPtr service_;
+    rclcpp::Client<rt2_assignment1::srv::RandomPosition>::SharedPtr client1_;
+    rclcpp::Client<rt2_assignment1::srv::Position>::SharedPtr client2_;
+    
+    rclcpp::TimerBase::SharedPtr timer_;
+  
+    std::shared_ptr<rt2_assignment1::srv::RandomPosition::Request> request1;    
+    std::shared_ptr<rt2_assignment1::srv::RandomPosition::Response> response1;  			
+    std::shared_ptr<rt2_assignment1::srv::Position::Request> request2;    
+    
+    bool start;
+    bool finish;
+  
+};
+
 }
+
+RCLCPP_COMPONENTS_REGISTER_NODE(rt2_assignment1::StateMachine) 
+
