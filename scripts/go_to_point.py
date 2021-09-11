@@ -142,8 +142,6 @@ def go_to_point(goal):
     result = rt2_assignment1.msg.PositionResult()
 
     while not rospy.is_shutdown():
-    	#if act_s.is_new_goal_available():
-    	#if act_s.is_active():
         if act_s.is_preempt_requested():
         	rospy.loginfo('Goal was preempted')
         	act_s.set_preempted()
@@ -187,6 +185,7 @@ def main():
     sub_odom = rospy.Subscriber('/odom', Odometry, clbk_odom)
 #    service = rospy.Service('/go_to_point', Position, go_to_point)
 
+	#define an action server instead of simple server
     act_s = actionlib.SimpleActionServer('/go_to_point', rt2_assignment1.msg.PositionAction, go_to_point, auto_start=False)
     act_s.start()
 	
