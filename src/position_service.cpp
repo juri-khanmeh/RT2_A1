@@ -20,6 +20,8 @@ namespace rt2_assignment1{
 class RandomServer : public rclcpp::Node
 {
 public:
+
+  //initialize a node
   RandomServer(const rclcpp::NodeOptions & options)
   : Node("RandomPose_server",options)
   {
@@ -29,11 +31,13 @@ public:
   }
 
 private:
-
+  
+  // function which returns a random number between the value M and N
   double randMToN(double M, double N){     
   	return M + (rand() / ( RAND_MAX / (N-M) ) ) ; 
   }
 
+  //service calling handle
   void handle_service(
   const std::shared_ptr<rmw_request_id_t> request_header,
   const std::shared_ptr<rt2_assignment1::srv::RandomPosition::Request> request,

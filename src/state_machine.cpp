@@ -26,11 +26,13 @@ public:
   StateMachine(const rclcpp::NodeOptions & options)
   : Node("StateMachine_server",options)
   {
-    start = false;
-    finish = true;
+    start = false; //represent the input command
+    finish = true; //indicator for reaching the goal
     
+    //Command server
     service_ = this->create_service<rt2_assignment1::srv::Command>("/user_interface", std::bind(&StateMachine::user_interface, this, _1, _2, _3));
     
+    //Random Position client
     client1_ = this->create_client<rt2_assignment1::srv::RandomPosition>("/position_server");
     while (!client1_->wait_for_service(std::chrono::seconds(1))) {
         if (!rclcpp::ok()) {
@@ -40,6 +42,7 @@ public:
         RCLCPP_INFO(this->get_logger(), "waiting for RandomPosition service to appear...");
     }
     
+    //GoToPoint client
     client2_ = this->create_client<rt2_assignment1::srv::Position>("go_to_point");
     while (!client2_->wait_for_service(std::chrono::seconds(1))) {
         if (!rclcpp::ok()) {
@@ -49,6 +52,7 @@ public:
         RCLCPP_INFO(this->get_logger(), "waiting for go_to_point service to appear...");
     }    
     
+    //Defining variables
 	request1 = std::make_shared<rt2_assignment1::srv::RandomPosition::Request>();
 	response1 = std::make_shared<rt2_assignment1::srv::RandomPosition::Response>(); 
 	request2 = std::make_shared<rt2_assignment1::srv::Position::Request>();
@@ -58,23 +62,21 @@ public:
   	request1->y_max= 5.0;
   	request1->y_min= -5.0;
 
+	//timer which executed regularly to check the status
 	timer_ = this->create_wall_timer(2000ms,std::bind(&StateMachine::status_check, this));	
     
   }
   
 private:
-  
-
-    
+    //timer call back
     void status_check(){
     	if(start && finish){
     		finish = false;
-    		//call_client1();
-    		call_client2();
-    		
+    		call_client2();	
     	}
     }
   	
+  	//random position call back
   	void call_client1(){
 
 	  	finish = false;
@@ -87,6 +89,7 @@ private:
     	auto result_future = client1_->async_send_request(request1, response_received_callback);
 	}
 	
+	//GoToPoint client call back
 	void call_client2()
 	{
 		call_client1();
@@ -108,7 +111,7 @@ private:
 
     }   
 
-  
+    //User Interface service call back
     void user_interface(
     const std::shared_ptr<rmw_request_id_t> request_header,
     const std::shared_ptr<rt2_assignment1::srv::Command::Request> request,
