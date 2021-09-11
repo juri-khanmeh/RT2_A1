@@ -1,4 +1,4 @@
-# Research Track 2 assignment 1 / Vrep scene
+# Research Track 2 assignment 1 - Vrep scene
 
 The package contains the nodes and the simulation environment for controlling a mobile robot in the Vrep simulation environment in ROS.
 
