@@ -1,8 +1,19 @@
-# First Assignment of the Research Track 2 course (Robotics Engineering / JEMARO, Unige)
+# Research Track 2 assignment 1
 
-The package contains the nodes and the simulation environment for controlling a mobile robot in the Gazebo simulation environment.
-To launch the node, please run:
-```
-roslaunch rt2_assignment1 sim.launch
-```
+The package contains the nodes and the simulation environment for controlling a mobile robot in the Vrep simulation environment in ROS.
 
+1. Open a terminal and execute 
+```
+./ros.sh
+roscore &
+```
+2. To launch the node, please run:
+```
+roslaunch rt2_assignment1 sim_vrep.launch
+```
+3. In a second tab, run 
+```
+./ros.sh
+./coppeliasim.sh
+```
+4. Start the simulation in Coppeliasim
