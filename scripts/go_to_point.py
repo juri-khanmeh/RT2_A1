@@ -24,7 +24,7 @@ pub_ = None
 yaw_precision_ = math.pi / 9  # +/- 20 degree allowed
 yaw_precision_2_ = math.pi / 90  # +/- 2 degree allowed
 dist_precision_ = 0.1
-kp_a = -3.0 
+kp_a = 3.0 
 kp_d = 0.2
 ub_a = 0.6
 lb_a = -0.5
@@ -62,12 +62,13 @@ def normalize_angle(angle):
     return angle
 
 def fix_yaw(des_pos):
+    kp_a = rospy.get_param("kp_vel")
     desired_yaw = math.atan2(des_pos.y - position_.y, des_pos.x - position_.x)
     err_yaw = normalize_angle(desired_yaw - yaw_)
-    rospy.loginfo(err_yaw)
+    #rospy.loginfo(err_yaw)
     twist_msg = Twist()
     if math.fabs(err_yaw) > yaw_precision_2_:
-        twist_msg.angular.z = kp_a*err_yaw
+        twist_msg.angular.z = -kp_a*err_yaw
         if twist_msg.angular.z > ub_a:
             twist_msg.angular.z = ub_a
         elif twist_msg.angular.z < lb_a:
@@ -80,20 +81,21 @@ def fix_yaw(des_pos):
 
 
 def go_straight_ahead(des_pos):
+    kp_d = rospy.get_param("linear_vel")
     desired_yaw = math.atan2(des_pos.y - position_.y, des_pos.x - position_.x)
     err_yaw = desired_yaw - yaw_
     err_pos = math.sqrt(pow(des_pos.y - position_.y, 2) +
                         pow(des_pos.x - position_.x, 2))
     err_yaw = normalize_angle(desired_yaw - yaw_)
-    rospy.loginfo(err_yaw)
+    #rospy.loginfo(err_yaw)
 
     if err_pos > dist_precision_:
         twist_msg = Twist()
-        twist_msg.linear.x = 0.3
+        twist_msg.linear.x = kp_d
         if twist_msg.linear.x > ub_d:
             twist_msg.linear.x = ub_d
 
-        twist_msg.angular.z = kp_a*err_yaw
+        twist_msg.angular.z = -kp_a*err_yaw
         pub_.publish(twist_msg)
     else: # state change conditions
         #print ('Position error: [%s]' % err_pos)
@@ -105,11 +107,12 @@ def go_straight_ahead(des_pos):
         change_state(0)
 
 def fix_final_yaw(des_yaw):
+    kp_a = rospy.get_param("kp_vel")
     err_yaw = normalize_angle(des_yaw - yaw_)
-    rospy.loginfo(err_yaw)
+    #rospy.loginfo(err_yaw)
     twist_msg = Twist()
     if math.fabs(err_yaw) > yaw_precision_2_:
-        twist_msg.angular.z = kp_a*err_yaw
+        twist_msg.angular.z = -kp_a*err_yaw
         if twist_msg.angular.z > ub_a:
             twist_msg.angular.z = ub_a
         elif twist_msg.angular.z < lb_a:

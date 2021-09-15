@@ -1,6 +1,13 @@
 <?xml version="1.0"?>
 <launch>
-
+  <!-- Parameters for modulating the speed of the robot using the slideres -->
+  <arg name="linear_vel" default= "0.3"/>
+  <arg name="angular_vel" default= "0.3"/>
+  <arg name="kp_vel" default= "3.0"/>
+  <param name="linear_vel" value="$(arg linear_vel)" />
+  <param name="angular_vel" value="$(arg angular_vel)" />
+  <param name="kp_vel" value="$(arg kp_vel)" />
+  
   <!-- these are the arguments you can pass this launch file, for example paused:=true -->
   <arg name="model" default="$(find rt2_assignment1)/urdf/my_robot.urdf" />
 
@@ -16,7 +23,7 @@
    <node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen"
 	args="-urdf -model robot1 -param robot_description -z 0.05"/> 
 	
-   <node name="goToPoint" pkg="rt2_assignment1" type ="go_to_point.py" />
+   <node name="goToPoint" pkg="rt2_assignment1" type ="go_to_point.py" output="screen"/>
    
    <node name="positionServer"  pkg="rt2_assignment1" type="position_service" />
    
