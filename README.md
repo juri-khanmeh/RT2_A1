@@ -1,4 +1,4 @@
-# Research Track 2 assignment 1 - ACTION
+# Research Track 2 assignment 1 - ACTION + Jupyter
 
 The Branch action contains the same package in ROS, but with the go_to_point node modelled as a "ROS action" server, instead of a "simple" server.
 Given that, the robot FSM node should now implement mechanisms for possibly cancelling the goal, when the related user command is received.
