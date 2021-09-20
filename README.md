@@ -1,37 +1,26 @@
-# Research Track 2 assignment 1 - ACTION + Jupyter
+# Research Track 2 assignment 1 - ACTION + Jupyter Notebook
 
-The Branch action contains the same package in ROS, but with the go_to_point node modelled as a "ROS action" server, instead of a "simple" server.
-Given that, the robot FSM node should now implement mechanisms for possibly cancelling the goal, when the related user command is received.
+The Branch action contains the same package in ACTION, but with some modification for adapting some changes in the new interface in Jupyter Notebook.
 
-## Description (modifications of the package)
-### ACTION server
-* We created an action message `Position.action` which consists of a goal, feedback and result.
-```
-#goal
-geometry_msgs/PoseStamped target_pose
----
-#result
-bool ok
----
-#feedback
-geometry_msgs/Pose actual_pose
-string stat
-```
-### (user_interface)
-* We removed the message 
-```
-print("Please wait, the robot is going to stop when the position will be reached")
-```
-because now the robot must stop immediately once it receives the stop command.
+Now the user interface is enhanced and besides, we showcase some graphs and plots which are usefull for tracking some information about the robots.
 
-### (go_to_point)
-* We defined a simple action server instead of a simple server for `/go_to_point` topic
-* So instead of using the request and the response we replaced them by a goal, a feedback and a result.
-* Besides, now there is the posibility to cancel the goal before reaching the target.
+## Description (Jupyter Notebooks)
+### better_interface
+* We created a notebook with a name `better_interface` which consists of some useful interface for controlling the robot.
+- starting / stopping the robot's random position behaviour by using two Buttons
+- setting the linear and angular velocity by using two Sliders
+- directly controlling the robot movements by using 5 Buttons
 
-### (state_machine)
-* We created a simple action client instead of the simple client.
-* We added a case for cancelling the goal.
+### graphs and plot
+* We created a notebook with a name `graphs and plot` which has some graphs and plots for position, velocity, goals information.
+- a line plot for visualizing cmd_vel vs. actual velocity (for linear and angular velocity)
+- a bar plot displaying the number of reached targets and cancelled targets
+- a hist plot showing the time required to reach targets
+- an xy graph showing the robot's position and the orientation
+
+### Histogram
+* We created a separate notebook for histogram graph `Histogram`, just because this plot slow down the execution of other plots. But we can merge the three notebooks in one if we want.
+
 
 ## Instruction how to run the code:
 
@@ -39,5 +28,8 @@ because now the robot must stop immediately once it receives the stop command.
 ```
 roslaunch rt2_assignment1 sim.launch
 ```
+2. Open Jupyter notebooks
+3. Run the codes.
 
+Note: we kept the old interfaces in command line.
 
