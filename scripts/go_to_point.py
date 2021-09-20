@@ -147,6 +147,7 @@ def go_to_point(goal):
     while not rospy.is_shutdown():
         if act_s.is_preempt_requested():
         	rospy.loginfo('Goal was preempted')
+        	result.ok = False
         	act_s.set_preempted()
         	done()
         	success = False
@@ -179,6 +180,7 @@ def go_to_point(goal):
             
     if success:
     	rospy.loginfo('Goal: Succeeded!')
+    	result.ok = True
     	act_s.set_succeeded(result)
 
 def main():
