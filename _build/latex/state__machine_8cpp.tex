@@ -1,0 +1,102 @@
+\hypertarget{state__machine_8cpp}{}\doxysection{src/state\+\_\+machine.cpp File Reference}
+\label{state__machine_8cpp}\index{src/state\_machine.cpp@{src/state\_machine.cpp}}
+
+
+state machine for rt2\+\_\+assignment1 control  
+
+
+{\ttfamily \#include \char`\"{}ros/ros.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}rt2\+\_\+assignment1/\+Command.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}rt2\+\_\+assignment1/\+Random\+Position.\+h\char`\"{}}\newline
+{\ttfamily \#include $<$rt2\+\_\+assignment1/\+Position\+Action.\+h$>$}\newline
+{\ttfamily \#include $<$actionlib/client/simple\+\_\+action\+\_\+client.\+h$>$}\newline
+{\ttfamily \#include $<$actionlib/client/terminal\+\_\+state.\+h$>$}\newline
+Include dependency graph for state\+\_\+machine.\+cpp\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{state__machine_8cpp__incl}
+\end{center}
+\end{figure}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+bool \mbox{\hyperlink{state__machine_8cpp_a1a9543636935547580c0657f4c7c0c2b}{user\+\_\+interface}} (rt2\+\_\+assignment1\+::\+Command\+::\+Request \&req, rt2\+\_\+assignment1\+::\+Command\+::\+Response \&res)
+\begin{DoxyCompactList}\small\item\em server callback of \textquotesingle{}/user\+\_\+interface\textquotesingle{}. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{state__machine_8cpp_a3c04138a5bfe5d72780bb7e82a18e627}{main}} (int argc, char $\ast$$\ast$argv)
+\begin{DoxyCompactList}\small\item\em main function \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{state__machine_8cpp_ab376b87f96a574a793c03c53e75afec8}\label{state__machine_8cpp_ab376b87f96a574a793c03c53e75afec8}} 
+bool \mbox{\hyperlink{state__machine_8cpp_ab376b87f96a574a793c03c53e75afec8}{start}} = false
+\begin{DoxyCompactList}\small\item\em start flag \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{state__machine_8cpp_af287bc8596383f162b2b900a54c7ee4a}\label{state__machine_8cpp_af287bc8596383f162b2b900a54c7ee4a}} 
+bool \mbox{\hyperlink{state__machine_8cpp_af287bc8596383f162b2b900a54c7ee4a}{cancel}} = true
+\begin{DoxyCompactList}\small\item\em cancel goal flag \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{state__machine_8cpp_a8b6b55007148a091271bfff279c47ab3}\label{state__machine_8cpp_a8b6b55007148a091271bfff279c47ab3}} 
+bool \mbox{\hyperlink{state__machine_8cpp_a8b6b55007148a091271bfff279c47ab3}{n\+\_\+target}} = true
+\begin{DoxyCompactList}\small\item\em new target flag \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+state machine for rt2\+\_\+assignment1 control 
+
+\begin{DoxyAuthor}{Author}
+Juri Khanmeh 
+\end{DoxyAuthor}
+\begin{DoxyVersion}{Version}
+0.\+1 
+\end{DoxyVersion}
+\begin{DoxyDate}{Date}
+25/09/2021
+\end{DoxyDate}
+Services \+: ~\newline
+ ° /user\+\_\+interface ° /position\+\_\+server ° /go\+\_\+to\+\_\+point
+
+Description \+:
+
+This file defines the state machine of rt2\+\_\+assignment1 control. Once this node receives a command to start the random movement, it calls \textquotesingle{}/position\+\_\+server\textquotesingle{}. The server \textquotesingle{}/position\+\_\+server\textquotesingle{} returns a random position. Once the node receives the random position, it calls the \textquotesingle{}/go\+\_\+to\+\_\+point\textquotesingle{} with target request. If the node receives a command to stop the random movement, it cancels the goal. 
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{state__machine_8cpp_a3c04138a5bfe5d72780bb7e82a18e627}\label{state__machine_8cpp_a3c04138a5bfe5d72780bb7e82a18e627}} 
+\index{state\_machine.cpp@{state\_machine.cpp}!main@{main}}
+\index{main@{main}!state\_machine.cpp@{state\_machine.cpp}}
+\doxysubsubsection{\texorpdfstring{main()}{main()}}
+{\footnotesize\ttfamily int main (\begin{DoxyParamCaption}\item[{int}]{argc,  }\item[{char $\ast$$\ast$}]{argv }\end{DoxyParamCaption})}
+
+
+
+main function 
+
+
+\begin{DoxyParams}{Parameters}
+{\em argc} & \\
+\hline
+{\em argv} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+always true.
+\end{DoxyReturn}
+The main function initializes the node, creates a \textquotesingle{}/user\+\_\+interface\textquotesingle{} service server, \textquotesingle{}/position\+\_\+server\textquotesingle{} service client and \textquotesingle{}/go\+\_\+to\+\_\+point\textquotesingle{} simple action client. Then in the main while loop, it checks whether the command is \char`\"{}start\char`\"{} or \char`\"{}stop\char`\"{}. If it is \char`\"{}start\char`\"{}, it calls \textquotesingle{}/position\+\_\+server\textquotesingle{} to get a random position. Then it sends this random position as a target request to \textquotesingle{}/go\+\_\+to\+\_\+point\textquotesingle{} action server. If the goal is reached, it repeats the same process again. If the goal was interupted it stops the process and waits for the new command to turn to \char`\"{}start\char`\"{} again. \mbox{\Hypertarget{state__machine_8cpp_a1a9543636935547580c0657f4c7c0c2b}\label{state__machine_8cpp_a1a9543636935547580c0657f4c7c0c2b}} 
+\index{state\_machine.cpp@{state\_machine.cpp}!user\_interface@{user\_interface}}
+\index{user\_interface@{user\_interface}!state\_machine.cpp@{state\_machine.cpp}}
+\doxysubsubsection{\texorpdfstring{user\_interface()}{user\_interface()}}
+{\footnotesize\ttfamily bool user\+\_\+interface (\begin{DoxyParamCaption}\item[{rt2\+\_\+assignment1\+::\+Command\+::\+Request \&}]{req,  }\item[{rt2\+\_\+assignment1\+::\+Command\+::\+Response \&}]{res }\end{DoxyParamCaption})}
+
+
+
+server callback of \textquotesingle{}/user\+\_\+interface\textquotesingle{}. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em \&req} & is Command\+::\+Request which is the command \mbox{[}\char`\"{}start\char`\"{}/\char`\"{}stop\char`\"{}\mbox{]}. \\
+\hline
+{\em \&res} & is Command\+::\+Response is a boolean \textquotesingle{}True\textquotesingle{} when the request is received. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+always true as this method cannot fail.
+\end{DoxyReturn}
+This function sets the global variable \textquotesingle{}start\textquotesingle{} to true if the request was \char`\"{}start\char`\"{} otherwise it sets it to false. 

@@ -1,0 +1,47 @@
+The Branch action contains the same package in R\+OS, but with the \mbox{\hyperlink{namespacego__to__point}{go\+\_\+to\+\_\+point}} node modelled as a \char`\"{}\+R\+O\+S action\char`\"{} server, instead of a \char`\"{}simple\char`\"{} server. Given that, the robot F\+SM node should now implement mechanisms for possibly cancelling the goal, when the related user command is received.\hypertarget{md__r_e_a_d_m_e_autotoc_md1}{}\doxysection{Description (modifications of the package)}\label{md__r_e_a_d_m_e_autotoc_md1}
+\hypertarget{md__r_e_a_d_m_e_autotoc_md2}{}\doxysubsection{A\+C\+T\+I\+O\+N server}\label{md__r_e_a_d_m_e_autotoc_md2}
+
+\begin{DoxyItemize}
+\item We created an action message {\ttfamily Position.\+action} which consists of a goal, feedback and result. 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\#goal}
+\DoxyCodeLine{geometry\_msgs/PoseStamped target\_pose}
+\DoxyCodeLine{-\/-\/-\/}
+\DoxyCodeLine{\#result}
+\DoxyCodeLine{bool ok}
+\DoxyCodeLine{-\/-\/-\/}
+\DoxyCodeLine{\#feedback}
+\DoxyCodeLine{geometry\_msgs/Pose actual\_pose}
+\DoxyCodeLine{string stat}
+\end{DoxyCode}
+
+\end{DoxyItemize}\hypertarget{md__r_e_a_d_m_e_autotoc_md3}{}\doxysubsection{(user\+\_\+interface)}\label{md__r_e_a_d_m_e_autotoc_md3}
+
+\begin{DoxyItemize}
+\item We removed the message 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{print("Please wait, the robot is going to stop when the position will be reached")}
+\end{DoxyCode}
+
+\end{DoxyItemize}
+
+because now the robot must stop immediately once it receives the stop command.\hypertarget{md__r_e_a_d_m_e_autotoc_md4}{}\doxysubsection{(go\+\_\+to\+\_\+point)}\label{md__r_e_a_d_m_e_autotoc_md4}
+
+\begin{DoxyItemize}
+\item We defined a simple action server instead of a simple server for {\ttfamily /go\+\_\+to\+\_\+point} topic
+\item So instead of using the request and the response we replaced them by a goal, a feedback and a result.
+\item Besides, now there is the posibility to cancel the goal before reaching the target.
+\end{DoxyItemize}\hypertarget{md__r_e_a_d_m_e_autotoc_md5}{}\doxysubsection{(state\+\_\+machine)}\label{md__r_e_a_d_m_e_autotoc_md5}
+
+\begin{DoxyItemize}
+\item We created a simple action client instead of the simple client.
+\item We added a case for cancelling the goal.
+\end{DoxyItemize}\hypertarget{md__r_e_a_d_m_e_autotoc_md6}{}\doxysection{Instruction how to run the code\+:}\label{md__r_e_a_d_m_e_autotoc_md6}
+
+\begin{DoxyEnumerate}
+\item Open a terminal (R\+OS sourced) then execute 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{roslaunch rt2\_assignment1 sim.launch}
+\end{DoxyCode}
+ 
+\end{DoxyEnumerate}

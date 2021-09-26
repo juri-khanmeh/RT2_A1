@@ -1,0 +1,108 @@
+\hypertarget{position__service_8cpp}{}\doxysection{src/position\+\_\+service.cpp File Reference}
+\label{position__service_8cpp}\index{src/position\_service.cpp@{src/position\_service.cpp}}
+
+
+This file defines the position service.  
+
+
+{\ttfamily \#include \char`\"{}ros/ros.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}rt2\+\_\+assignment1/\+Random\+Position.\+h\char`\"{}}\newline
+Include dependency graph for position\+\_\+service.\+cpp\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=348pt]{position__service_8cpp__incl}
+\end{center}
+\end{figure}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+double \mbox{\hyperlink{position__service_8cpp_a10f83119b77a8fbd085a5550955f85ff}{rand\+M\+ToN}} (double M, double N)
+\begin{DoxyCompactList}\small\item\em random number generator \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{position__service_8cpp_ab65b9ff5368189ad34fe4989d50742e4}{myrandom}} (rt2\+\_\+assignment1\+::\+Random\+Position\+::\+Request \&req, rt2\+\_\+assignment1\+::\+Random\+Position\+::\+Response \&res)
+\begin{DoxyCompactList}\small\item\em \textquotesingle{}/position\+\_\+server\textquotesingle{} server callback \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{position__service_8cpp_a3c04138a5bfe5d72780bb7e82a18e627}{main}} (int argc, char $\ast$$\ast$argv)
+\begin{DoxyCompactList}\small\item\em main function \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+This file defines the position service. 
+
+\begin{DoxyAuthor}{Author}
+Juri Khanmeh 
+\end{DoxyAuthor}
+\begin{DoxyVersion}{Version}
+0.\+1 
+\end{DoxyVersion}
+\begin{DoxyDate}{Date}
+25/09/2021
+\end{DoxyDate}
+Services \+: ~\newline
+ ° /position\+\_\+server
+
+Description \+:
+
+This node is a random position server. It responds with a random position (x,y,theta), which is used as a target to be reached. The random number for (x,y) position is between \mbox{[}min, max\mbox{]} that can be set in the request. The \mbox{[}min, max\mbox{]} values of random number for (theta) is initially set and fixed \mbox{[}-\/3.\+14, 3.\+14\mbox{]} 
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{position__service_8cpp_a3c04138a5bfe5d72780bb7e82a18e627}\label{position__service_8cpp_a3c04138a5bfe5d72780bb7e82a18e627}} 
+\index{position\_service.cpp@{position\_service.cpp}!main@{main}}
+\index{main@{main}!position\_service.cpp@{position\_service.cpp}}
+\doxysubsubsection{\texorpdfstring{main()}{main()}}
+{\footnotesize\ttfamily int main (\begin{DoxyParamCaption}\item[{int}]{argc,  }\item[{char $\ast$$\ast$}]{argv }\end{DoxyParamCaption})}
+
+
+
+main function 
+
+
+\begin{DoxyParams}{Parameters}
+{\em argc} & \\
+\hline
+{\em argv} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+always true.
+\end{DoxyReturn}
+The main function initializes the node and creates a \textquotesingle{}/position\+\_\+server\textquotesingle{} service server. \mbox{\Hypertarget{position__service_8cpp_ab65b9ff5368189ad34fe4989d50742e4}\label{position__service_8cpp_ab65b9ff5368189ad34fe4989d50742e4}} 
+\index{position\_service.cpp@{position\_service.cpp}!myrandom@{myrandom}}
+\index{myrandom@{myrandom}!position\_service.cpp@{position\_service.cpp}}
+\doxysubsubsection{\texorpdfstring{myrandom()}{myrandom()}}
+{\footnotesize\ttfamily bool myrandom (\begin{DoxyParamCaption}\item[{rt2\+\_\+assignment1\+::\+Random\+Position\+::\+Request \&}]{req,  }\item[{rt2\+\_\+assignment1\+::\+Random\+Position\+::\+Response \&}]{res }\end{DoxyParamCaption})}
+
+
+
+\textquotesingle{}/position\+\_\+server\textquotesingle{} server callback 
+
+
+\begin{DoxyParams}{Parameters}
+{\em \&req} & defines the lower and upper bounds for x and y random numbers\textquotesingle{} range \\
+\hline
+{\em \&res} & defines the position \mbox{[}x,y\mbox{]} and the orientation \mbox{[}theta\mbox{]} \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+always true as this method cannot fail.
+\end{DoxyReturn}
+This function creates a Random\+Position message. It fills up the response message with random value for x, y and theta \mbox{\Hypertarget{position__service_8cpp_a10f83119b77a8fbd085a5550955f85ff}\label{position__service_8cpp_a10f83119b77a8fbd085a5550955f85ff}} 
+\index{position\_service.cpp@{position\_service.cpp}!randMToN@{randMToN}}
+\index{randMToN@{randMToN}!position\_service.cpp@{position\_service.cpp}}
+\doxysubsubsection{\texorpdfstring{randMToN()}{randMToN()}}
+{\footnotesize\ttfamily double rand\+M\+ToN (\begin{DoxyParamCaption}\item[{double}]{M,  }\item[{double}]{N }\end{DoxyParamCaption})}
+
+
+
+random number generator 
+
+
+\begin{DoxyParams}{Parameters}
+{\em M} & defines the minimum possible value of the random number \\
+\hline
+{\em N} & defines the maximum possible value of the random number \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+the random position (x,y,theta).
+\end{DoxyReturn}
+rand\+M\+ToN is a function for generating random position in given range \mbox{[}min,max\mbox{]}. 

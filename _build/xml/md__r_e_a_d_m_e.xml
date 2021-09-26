@@ -1,0 +1,65 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.17">
+  <compounddef id="md__r_e_a_d_m_e" kind="page">
+    <compoundname>md_README</compoundname>
+    <title>Research Track 2 assignment 1 - Action - Sphinx</title>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para>The Branch action contains the same package in ROS, but with the <ref refid="namespacego__to__point" kindref="compound">go_to_point</ref> node modelled as a &quot;ROS action&quot; server, instead of a &quot;simple&quot; server. Given that, the robot FSM node should now implement mechanisms for possibly cancelling the goal, when the related user command is received.</para>
+<sect1 id="md__r_e_a_d_m_e_1autotoc_md1">
+<title>Description (modifications of the package)</title>
+<sect2 id="md__r_e_a_d_m_e_1autotoc_md2">
+<title>ACTION server</title>
+<para><itemizedlist>
+<listitem><para>We created an action message <computeroutput>Position.action</computeroutput> which consists of a goal, feedback and result. <programlisting><codeline><highlight class="normal">#goal</highlight></codeline>
+<codeline><highlight class="normal">geometry_msgs/PoseStamped<sp/>target_pose</highlight></codeline>
+<codeline><highlight class="normal">---</highlight></codeline>
+<codeline><highlight class="normal">#result</highlight></codeline>
+<codeline><highlight class="normal">bool<sp/>ok</highlight></codeline>
+<codeline><highlight class="normal">---</highlight></codeline>
+<codeline><highlight class="normal">#feedback</highlight></codeline>
+<codeline><highlight class="normal">geometry_msgs/Pose<sp/>actual_pose</highlight></codeline>
+<codeline><highlight class="normal">string<sp/>stat</highlight></codeline>
+</programlisting></para>
+</listitem></itemizedlist>
+</para>
+</sect2>
+<sect2 id="md__r_e_a_d_m_e_1autotoc_md3">
+<title>(user_interface)</title>
+<para><itemizedlist>
+<listitem><para>We removed the message <programlisting><codeline><highlight class="normal">print(&quot;Please<sp/>wait,<sp/>the<sp/>robot<sp/>is<sp/>going<sp/>to<sp/>stop<sp/>when<sp/>the<sp/>position<sp/>will<sp/>be<sp/>reached&quot;)</highlight></codeline>
+</programlisting></para>
+</listitem></itemizedlist>
+</para>
+<para>because now the robot must stop immediately once it receives the stop command.</para>
+</sect2>
+<sect2 id="md__r_e_a_d_m_e_1autotoc_md4">
+<title>(go_to_point)</title>
+<para><itemizedlist>
+<listitem><para>We defined a simple action server instead of a simple server for <computeroutput>/go_to_point</computeroutput> topic</para>
+</listitem><listitem><para>So instead of using the request and the response we replaced them by a goal, a feedback and a result.</para>
+</listitem><listitem><para>Besides, now there is the posibility to cancel the goal before reaching the target.</para>
+</listitem></itemizedlist>
+</para>
+</sect2>
+<sect2 id="md__r_e_a_d_m_e_1autotoc_md5">
+<title>(state_machine)</title>
+<para><itemizedlist>
+<listitem><para>We created a simple action client instead of the simple client.</para>
+</listitem><listitem><para>We added a case for cancelling the goal.</para>
+</listitem></itemizedlist>
+</para>
+</sect2>
+</sect1>
+<sect1 id="md__r_e_a_d_m_e_1autotoc_md6">
+<title>Instruction how to run the code:</title>
+<para><orderedlist>
+<listitem><para>Open a terminal (ROS sourced) then execute <programlisting><codeline><highlight class="normal">roslaunch<sp/>rt2_assignment1<sp/>sim.launch</highlight></codeline>
+</programlisting> </para>
+</listitem></orderedlist>
+</para>
+</sect1>
+    </detaileddescription>
+  </compounddef>
+</doxygen>

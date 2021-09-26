@@ -1,0 +1,56 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.17">
+  <compounddef id="_r_e_a_d_m_e_8md" kind="file" language="Markdown">
+    <compoundname>README.md</compoundname>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline><highlight class="normal">#<sp/>Research<sp/>Track<sp/>2<sp/>assignment<sp/>1<sp/>-<sp/>Action<sp/>-<sp/>Sphinx</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">The<sp/>Branch<sp/>action<sp/>contains<sp/>the<sp/>same<sp/>package<sp/>in<sp/>ROS,<sp/>but<sp/>with<sp/>the<sp/>go_to_point<sp/>node<sp/>modelled<sp/>as<sp/>a<sp/>&quot;ROS<sp/>action&quot;<sp/>server,<sp/>instead<sp/>of<sp/>a<sp/>&quot;simple&quot;<sp/>server.</highlight></codeline>
+<codeline><highlight class="normal">Given<sp/>that,<sp/>the<sp/>robot<sp/>FSM<sp/>node<sp/>should<sp/>now<sp/>implement<sp/>mechanisms<sp/>for<sp/>possibly<sp/>cancelling<sp/>the<sp/>goal,<sp/>when<sp/>the<sp/>related<sp/>user<sp/>command<sp/>is<sp/>received.</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">##<sp/>Description<sp/>(modifications<sp/>of<sp/>the<sp/>package)</highlight></codeline>
+<codeline><highlight class="normal">###<sp/>ACTION<sp/>server</highlight></codeline>
+<codeline><highlight class="normal">*<sp/>We<sp/>created<sp/>an<sp/>action<sp/>message<sp/>`Position.action`<sp/>which<sp/>consists<sp/>of<sp/>a<sp/>goal,<sp/>feedback<sp/>and<sp/>result.</highlight></codeline>
+<codeline><highlight class="normal">```</highlight></codeline>
+<codeline><highlight class="normal">#goal</highlight></codeline>
+<codeline><highlight class="normal">geometry_msgs/PoseStamped<sp/>target_pose</highlight></codeline>
+<codeline><highlight class="normal">---</highlight></codeline>
+<codeline><highlight class="normal">#result</highlight></codeline>
+<codeline><highlight class="normal">bool<sp/>ok</highlight></codeline>
+<codeline><highlight class="normal">---</highlight></codeline>
+<codeline><highlight class="normal">#feedback</highlight></codeline>
+<codeline><highlight class="normal">geometry_msgs/Pose<sp/>actual_pose</highlight></codeline>
+<codeline><highlight class="normal">string<sp/>stat</highlight></codeline>
+<codeline><highlight class="normal">```</highlight></codeline>
+<codeline><highlight class="normal">###<sp/>(user_interface)</highlight></codeline>
+<codeline><highlight class="normal">*<sp/>We<sp/>removed<sp/>the<sp/>message<sp/></highlight></codeline>
+<codeline><highlight class="normal">```</highlight></codeline>
+<codeline><highlight class="normal">print(&quot;Please<sp/>wait,<sp/>the<sp/>robot<sp/>is<sp/>going<sp/>to<sp/>stop<sp/>when<sp/>the<sp/>position<sp/>will<sp/>be<sp/>reached&quot;)</highlight></codeline>
+<codeline><highlight class="normal">```</highlight></codeline>
+<codeline><highlight class="normal">because<sp/>now<sp/>the<sp/>robot<sp/>must<sp/>stop<sp/>immediately<sp/>once<sp/>it<sp/>receives<sp/>the<sp/>stop<sp/>command.</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">###<sp/>(go_to_point)</highlight></codeline>
+<codeline><highlight class="normal">*<sp/>We<sp/>defined<sp/>a<sp/>simple<sp/>action<sp/>server<sp/>instead<sp/>of<sp/>a<sp/>simple<sp/>server<sp/>for<sp/>`/go_to_point`<sp/>topic</highlight></codeline>
+<codeline><highlight class="normal">*<sp/>So<sp/>instead<sp/>of<sp/>using<sp/>the<sp/>request<sp/>and<sp/>the<sp/>response<sp/>we<sp/>replaced<sp/>them<sp/>by<sp/>a<sp/>goal,<sp/>a<sp/>feedback<sp/>and<sp/>a<sp/>result.</highlight></codeline>
+<codeline><highlight class="normal">*<sp/>Besides,<sp/>now<sp/>there<sp/>is<sp/>the<sp/>posibility<sp/>to<sp/>cancel<sp/>the<sp/>goal<sp/>before<sp/>reaching<sp/>the<sp/>target.</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">###<sp/>(state_machine)</highlight></codeline>
+<codeline><highlight class="normal">*<sp/>We<sp/>created<sp/>a<sp/>simple<sp/>action<sp/>client<sp/>instead<sp/>of<sp/>the<sp/>simple<sp/>client.</highlight></codeline>
+<codeline><highlight class="normal">*<sp/>We<sp/>added<sp/>a<sp/>case<sp/>for<sp/>cancelling<sp/>the<sp/>goal.</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">##<sp/>Instruction<sp/>how<sp/>to<sp/>run<sp/>the<sp/>code:</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">1.<sp/>Open<sp/>a<sp/>terminal<sp/>(ROS<sp/>sourced)<sp/>then<sp/>execute</highlight></codeline>
+<codeline><highlight class="normal">```</highlight></codeline>
+<codeline><highlight class="normal">roslaunch<sp/>rt2_assignment1<sp/>sim.launch</highlight></codeline>
+<codeline><highlight class="normal">```</highlight></codeline>
+<codeline></codeline>
+<codeline></codeline>
+    </programlisting>
+    <location file="README.md"/>
+  </compounddef>
+</doxygen>
