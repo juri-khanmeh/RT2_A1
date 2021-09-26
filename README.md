@@ -10,5 +10,5 @@ The Branch Doxygen contains the same package of Action, but we added a documenta
 roslaunch rt2_assignment1 sim.launch
 ```
 Note: 
-* The documentation can found in *rt2_assignment1/docs/html/* folder.
-* Open *files.html* with Firefox web browser.
+* The documentation can found in `rt2_assignment1/docs/html/` folder.
+* Open `files.html` with *Firefox web browser*.
